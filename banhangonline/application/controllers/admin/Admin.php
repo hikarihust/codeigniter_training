@@ -79,4 +79,53 @@ Class Admin extends MY_Controller{
 		$this->data['temp'] = 'admin/admin/index';
 		$this->load->view('admin/main', $this->data);
 	}
+	/*
+	*	Kiem tra username da ton tai chua
+	*/
+	public function check_username(){
+		$username = $this->input->post('username');
+		$where = array('username' => $username);
+		// Kiem tra xem username da ton tai chua
+		if ($this->admin_model->check_exists($where)) {
+			// Tra ve thong bao loi
+			$this->form_validation->set_message(__FUNCTION__, '{field} đã tồn tại');
+			return false;
+		}
+		return true;
+	}
+	/*
+	*	Them moi quan tri vien
+	*/
+	public function add(){
+		$this->load->library('form_validation');
+		$this->load->helper('form');
+
+		// Neu ma co du lieu post len thi kiem tra
+		if ($this->input->post()) {
+			$this->form_validation->set_rules('name', 'Tên', 'required|min_length[8]');
+			$this->form_validation->set_rules('username', 'Tài khoản đăng nhập', 'required|callback_check_username');
+			$this->form_validation->set_rules('password', 'Mật khẩu', 'required|min_length[6]');
+			$this->form_validation->set_rules('re_password', 'Nhập lại mật khẩu', 'required|matches[password]');
+
+			// Nhập liệu chính xác
+			if ($this->form_validation->run()) {
+				// Them vao csdl
+				$name = $this->input->post('name');
+				$username = $this->input->post('username');
+				$password = $this->input->post('password');
+				
+				$this->data = array(
+					'name' => $name,
+					'username' => $username,
+					'password' => md5($password)
+				);
+				if ($this->admin_model->create($this->data)) {
+					echo "Them thanh cong";
+				}else{
+					echo "Khong them thanh cong";
+				}
+			}
+		}
+		$this->data['temp'] = 'admin/admin/add';
+		$this->load->view('admin/main', $this->data);	}
 }

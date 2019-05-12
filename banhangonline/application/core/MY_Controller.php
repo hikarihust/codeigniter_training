@@ -15,6 +15,7 @@ Class MY_Controller extends CI_Controller{
 			case 'admin':
 				{
 					// Xu ly cac du lieu khi truy cap vao admin
+					$this->load->helper('admin');
 					$this->_check_login();
 					break;
 				}
