@@ -14,8 +14,6 @@ class MY_Model extends CI_Model {
 	
 	// Cac field select mac dinh khi get_list (VD: $select = 'id, name')
 	protected $select = '';
-
-	protected $where = array();
 	
 	/**
 	 * Them row moi
@@ -42,8 +40,8 @@ class MY_Model extends CI_Model {
 			return FALSE;
 		}
 		
-	 	$this->where[$this->key] = $id;
-	    $this->update_rule($this->where, $data);
+	 	$where[$this->key] = $id;
+	    $this->update_rule($where, $data);
 	 	
 	 	return TRUE;
 	}
@@ -128,9 +126,9 @@ class MY_Model extends CI_Model {
 			return FALSE;
 		}
 	 	
-	 	$this->where[$this->key] = $id;
+	 	$where[$this->key] = $id;
 	 	
-	 	return $this->get_info_rule($this->where, $field);
+	 	return $this->get_info_rule($where, $field);
 	}
 	
 	/**

@@ -4,6 +4,7 @@
 <div class="line"></div>
 
 <div class="wrapper">
+    <?php $this->load->view('admin/message', $this->data); ?>
     <div class="widget">
         <div class="title">
             <span class="titleIcon">
@@ -47,11 +48,11 @@
                         <?php echo $row->username ?>					
                     </td>
                     <td class="option">
-                        <a href="user/edit/19.html" title="Chỉnh sửa" class="tipS ">
-                        <img src="<?php echo public_url('admin') ?>/images/icons/color/edit.png" />
+                        <a href="<?php echo admin_url('admin/edit/'.$row->id) ?>" title="Chỉnh sửa" class="tipS ">
+                            <img src="<?php echo public_url('admin') ?>/images/icons/color/edit.png" />
                         </a>
-                        <a href="user/del/19.html" title="Xóa" class="tipS verify_action" >
-                        <img src="<?php echo public_url('admin') ?>/images/icons/color/delete.png" />
+                        <a href="<?php echo admin_url('admin/delete/'.$row->id) ?>" title="Xóa" class="tipS verify_action" >
+                            <img src="<?php echo public_url('admin') ?>/images/icons/color/delete.png" />
                         </a>
                     </td>
                 </tr>

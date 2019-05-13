@@ -76,6 +76,9 @@ Class Admin extends MY_Controller{
 
 		$this->data['list'] = $list;
 		$this->data['total'] = $total;
+		// Lay ra noi dung cua bien message
+		$message = $this->session->flashdata('message');
+		$this->data['message'] = $message;
 		$this->data['temp'] = 'admin/admin/index';
 		$this->load->view('admin/main', $this->data);
 	}
@@ -120,12 +123,87 @@ Class Admin extends MY_Controller{
 					'password' => md5($password)
 				);
 				if ($this->admin_model->create($this->data)) {
-					echo "Them thanh cong";
+					// Tao ra noi dung thong bao
+					$this->session->set_flashdata('message', 'Thêm mới dữ liệu thành công');
 				}else{
-					echo "Khong them thanh cong";
+					$this->session->set_flashdata('message', 'Thêm mới dữ liệu không thành công');
 				}
+				// Chuyen toi trang danh sach quan tri vien
+				redirect(admin_url('admin'));
 			}
 		}
 		$this->data['temp'] = 'admin/admin/add';
-		$this->load->view('admin/main', $this->data);	}
+		$this->load->view('admin/main', $this->data);	
+	}
+
+	/*
+	*	Ham chinh sua thong tin quan tri vien
+	*/
+	public function edit(){
+		// Lay ra id cua quan tri vien can chinh sua
+		$id = $this->uri->rsegment('3');
+		$id = intval($id);
+		$this->load->library('form_validation');
+		// Lay thong tin cua quan tri vien
+		$info = $this->admin_model->get_info($id);
+		if(!$info){
+			$this->session->set_flashdata('message', 'Không tồn tại quản trị viên này');
+			redirect(admin_url('admin'));
+		}
+		$this->data['info'] = $info;
+		if ($this->input->post()) {
+			$this->form_validation->set_rules('name', 'Tên', 'required|min_length[8]');
+			$this->form_validation->set_rules('username', 'Tài khoản đăng nhập', 'required|callback_check_username');
+
+			$password = $this->input->post('password');
+			if ($password) {
+				$this->form_validation->set_rules('password', 'Mật khẩu', 'required|min_length[6]');
+				$this->form_validation->set_rules('re_password', 'Nhập lại mật khẩu', 'required|matches[password]');
+			}
+			if ($this->form_validation->run()) {
+				// Them vao csdl
+				$name = $this->input->post('name');
+				$username = $this->input->post('username');
+				
+				$this->data = array(
+					'name' => $name,
+					'username' => $username,
+				);
+				// Neu thay doi password thi moi gan du lieu
+				if ($password) {
+					$this->data['password'] = md5($password);
+				}
+
+				if ($this->admin_model->update($id, $this->data)) {
+					// Tao ra noi dung thong bao
+					$this->session->set_flashdata('message', 'Cập nhật dữ liệu thành công');
+				}else{
+					$this->session->set_flashdata('message', 'Cập nhật dữ liệu không thành công');
+				}
+				// Chuyen toi trang danh sach quan tri vien
+				redirect(admin_url('admin'));
+			}
+		}
+
+		$this->data['temp'] = 'admin/admin/edit';
+		$this->load->view('admin/main', $this->data);	
+	}
+
+	/*
+	*	Ham de xoa du lieu
+	*/
+	public function delete(){
+		$id = $this->uri->rsegment('3');
+		$id = intval($id);
+		// Lay ra thong tin cua quan tri vien
+		$info = $this->admin_model->get_info($id);
+		if(!$info){
+			$this->session->set_flashdata('message', 'Không tồn tại quản trị viên này');
+			redirect(admin_url('admin'));
+		}
+		// Thuc hien xoa
+		$this->admin_model->delete($id);
+		$this->session->set_flashdata('message', 'Xóa dữ liệu thành công');
+		redirect(admin_url('admin'));
+	}
 }
