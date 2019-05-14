@@ -33,6 +33,17 @@ Class MY_Controller extends CI_Controller{
 	 */
 
 	private function _check_login(){
-		
+		$controller = $this->router->fetch_class();
+		$controller = strtolower($controller);
+
+		$login = $this->session->userdata('login');
+		// Neu chua dang nhap ma truy cap vao 1 controller khac controller login
+		if (!$login && $controller !== 'login') {
+			redirect(admin_url('login'));
+		}
+		// Neu ma admin da dang nhap thi khong cho vao trang login nua
+		if ($login && $controller === 'login') {
+			redirect(admin_url('home'));
+		}
 	}
 }

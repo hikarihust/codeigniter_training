@@ -206,4 +206,14 @@ Class Admin extends MY_Controller{
 		$this->session->set_flashdata('message', 'Xóa dữ liệu thành công');
 		redirect(admin_url('admin'));
 	}
+
+	/*
+	*	Thuc hien dang xuat
+	*/
+	public function logout(){
+		if ($this->session->userdata('login')) {
+			$this->session->unset_userdata('login');
+		}
+		redirect(admin_url('login'));
+	}
 }
