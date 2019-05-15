@@ -42,7 +42,7 @@
                     Sản phẩm                            </a>
                 </li>
                 <li>
-                    <a href="admin/cat.html">
+                    <a href="<?php echo admin_url('catalog') ?>">
                     Danh mục                            </a>
                 </li>
                 <li>
